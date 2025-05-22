@@ -32,7 +32,7 @@ function Category() {
         icon: ''
     });
 
-    const baseUrl = 'https://localhost:7237/api/Category';
+    const baseUrl = 'https://localhost:7086/api/Category';
 
     useEffect(() => {
         fetchCategories();

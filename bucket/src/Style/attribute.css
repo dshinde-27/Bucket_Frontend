@@ -1,0 +1,105 @@
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px 10px;
+  width: 350px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  font-family: 'Segoe UI', sans-serif;
+  border: 2px solid #c39ba5;
+}
+
+/* Modal Heading */
+.modal-content h3 {
+  margin-bottom: 15px;
+  color: #a35d6a;
+  font-weight: 600;
+  border-bottom: 2px dashed #d6a4a4;
+  padding-bottom: 8px;
+}
+
+/* Input and Select Styling */
+.modal-content input[type="text"],
+.modal-content select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #d79ca9;
+  border-radius: 5px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* Value Row */
+.value-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Remove Button */
+.btn-remove {
+    background: none;
+    border: none;
+    color: #a83f4f;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: -47px;
+    margin-right: -43px;
+}
+
+/* Add Value Button */
+.modal-content button {
+  padding: 8px;
+  width: 100%;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-add-value{
+background-color: #8b4d5b;
+color: #fff;
+border: 1px solid #8b4d5b;
+}
+
+/* Save & Cancel Buttons */
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 45%;
+}
+
+.modal-actions button:first-child {
+  background-color: #8b4d5b;
+  color: white;
+}
+
+.modal-actions button:last-child {
+  background-color: #d8a2ab;
+  color: #fff;
+}

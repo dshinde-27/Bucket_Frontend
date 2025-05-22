@@ -11,6 +11,8 @@ import Category from './Product Management/Category';
 import SubCategory from './Product Management/SubCategory';
 import Tag from './Product Management/Tag';
 import Attribute from './Product Management/Attribute';
+import Author from './Product Management/Author';
+import AddAuthor from './Product Management/AddAuthor';
 
 function App() {
   const AuthenticatedLayout = ({ children }) => (
@@ -58,6 +60,12 @@ function App() {
         } />
          <Route path="/attribute" element={
           <AuthenticatedLayout><Attribute /></AuthenticatedLayout>
+        } />
+         <Route path="/author" element={
+          <AuthenticatedLayout><Author /></AuthenticatedLayout>
+        } />
+         <Route path="/add-author" element={
+          <AuthenticatedLayout><AddAuthor /></AuthenticatedLayout>
         } />
       </Routes>
     </Router>

@@ -1,0 +1,30 @@
+.modal-row {
+    display: flex;
+    border-top: 1px dashed #b49286; /* softer brown */
+    padding: 20px 0;
+    gap: 20px;
+    color: #744253; /* deep plum for text */
+    margin-top: -18px;
+}
+
+.modal-left {
+    width: 40%;
+    font-size: 12px;
+    color: #744253; /* deep plum for consistency */
+}
+
+.modal-right {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    color: #744253;
+    background-color: #ffffff;
+    border: 1px solid #c78283; /* muted rose border */
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 9px;
+    margin-top: -12px;
+    box-shadow: 0 2px 5px rgba(116, 66, 83, 0.1); /* subtle plum shadow */
+}
