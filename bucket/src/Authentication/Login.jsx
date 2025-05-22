@@ -17,7 +17,7 @@ function Login() {
         return;
     }
 
-    const response = await fetch("https://localhost:7237/api/Auth/Login", {
+    const response = await fetch("https://localhost:7086/api/Auth/Login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ UserName: username, Password: password }),

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../Style/sidebar.css';
+import '../Style/layout.css';
 import { MdDashboard } from "react-icons/md";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { GiLeafSwirl } from "react-icons/gi";
@@ -30,7 +30,7 @@ function Sidebar() {
     useEffect(() => {
         if (!roleId) return;
 
-        axios.get(`https://localhost:7237/api/Permission/GetMenu/${roleId}`)
+        axios.get(`https://localhost:7086/api/Permission/GetMenu/${roleId}`)
             .then((response) => {
                 if (typeof response.data === "object") {
                     setMenuItems(response.data);

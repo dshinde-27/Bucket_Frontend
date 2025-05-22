@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../Style/sidebar.css';
+import '../Style/layout.css';
 import { FaUserCircle, FaSignOutAlt, FaCog, FaPlus, FaUser } from 'react-icons/fa';
 import { FiSearch } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
