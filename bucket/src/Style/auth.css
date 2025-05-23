@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(to bottom right, #f3d9dc, #d7bea8); /* soft gradient */
+  background: linear-gradient(to bottom right, #f3d9dc, #d7bea8);
 }
 
 .login-container {
@@ -52,8 +52,7 @@
   .input-group input {
     width: 96%;
     padding: 5px 5px;
-    border: 2px solid #b49286
-;
+    border: 2px solid #b49286;
     border-radius: 6px;
     outline: none;
     transition: border-color 0.3s ease;
@@ -114,7 +113,7 @@
   }
   
   .password-wrapper input {
-    padding-right: 5px; /* space for the icon */
+    padding-right: 5px;
   }
   
   .password-wrapper span {

@@ -20,11 +20,15 @@ function Attribute() {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [attributes, setAttributes] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+
   const CategoryUrl = 'https://localhost:7086/api/Category';
+  const AttributeApiUrl = 'https://localhost:7086/api/Attribute';
 
   useEffect(() => {
     fetchCategories();
     fetchSubCategories();
+    fetchAttributes();
   }, []);
 
   const fetchCategories = async () => {
@@ -45,6 +49,15 @@ function Attribute() {
     }
   };
 
+  const fetchAttributes = async () => {
+    try {
+      const response = await axios.get(`${AttributeApiUrl}/GetAttributes`);
+      setAttributes(response.data);
+    } catch (error) {
+      console.error('Error fetching Attributes:', error);
+    }
+  };
+
   const handleAddValue = () => {
     setValues([...values, { value: '', meta: '' }]);
   };
@@ -61,34 +74,80 @@ function Attribute() {
     setValues(updated);
   };
 
-  const handleSaveAttribute = () => {
-    const attributeData = {
-      name: attributeName,
-      categoryId,
-      subCategoryId,
-      values,
-    };
-    console.log('Saved Attribute:', attributeData);
-    setShowModal(false);
-
-    // Reset fields
+  const resetForm = () => {
     setAttributeName('');
     setCategoryId('');
     setSubCategoryId('');
     setValues([]);
+    setEditingId(null);
   };
 
-  const handleDeleteTag = (id) => {
-    const filtered = attributes.filter(attr => attr.id !== id);
-    setAttributes(filtered);
+  const handleSaveAttribute = async () => {
+    if (!attributeName || !categoryId || !subCategoryId) {
+      alert('Please fill all required fields.');
+      return;
+    }
+
+    const attributeData = {
+      attributeName,
+      categoryId: Number(categoryId),
+      subCategoryId: Number(subCategoryId),
+      status: 'Active',
+      values: values.map((v) => ({ value: v.value, meta: v.meta })),
+    };
+
+    try {
+      if (editingId) {
+        const response = await axios.put(
+          `${AttributeApiUrl}/EditAttribute/${editingId}`,
+          attributeData
+        );
+        if (response.data.success) {
+          alert(response.data.message);
+          setShowModal(false);
+          fetchAttributes();
+          resetForm();
+        }
+      } else {
+        const response = await axios.post(
+          `${AttributeApiUrl}/AddAttribute`,
+          attributeData
+        );
+        if (response.data.success) {
+          alert(response.data.message);
+          setShowModal(false);
+          fetchAttributes();
+          resetForm();
+        }
+      }
+    } catch (error) {
+      console.error('Error saving attribute:', error);
+      alert('Failed to save attribute.');
+    }
+  };
+
+  const handleDeleteTag = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this attribute?')) return;
+
+    try {
+      const response = await axios.delete(`${AttributeApiUrl}/DeleteAttribute/${id}`);
+      if (response.data.success) {
+        alert(response.data.message);
+        fetchAttributes();
+      }
+    } catch (error) {
+      console.error('Error deleting attribute:', error);
+      alert('Failed to delete attribute.');
+    }
   };
 
   const handleEditClick = (attr) => {
     setShowModal(true);
+    setEditingId(attr.id);
     setAttributeName(attr.attributeName);
     setCategoryId(attr.categoryId);
     setSubCategoryId(attr.subCategoryId);
-    setValues(attr.values);
+    setValues(attr.values || []);
   };
 
   return (
@@ -107,28 +166,30 @@ function Attribute() {
           <div className="role-header">
             <h2>Attributes</h2>
             <div className="role-actions">
-              <button className="search-icon" onClick={() => setShowSearch((prev) => !prev)}>
+              <button
+                className="search-icon"
+                onClick={() => setShowSearch((prev) => !prev)}
+              >
                 <FaSearch />
               </button>
               {showSearch && (
                 <input
                   type="text"
                   className="search-box"
-                  placeholder="Search categories..."
+                  placeholder="Search attributes..."
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                 />
               )}
-              <button className="add-role-btn" onClick={() => setShowModal(true)}>
+              <button className="add-role-btn" onClick={() => { setShowModal(true); resetForm(); }}>
                 <FaPlus /> Add Attribute
               </button>
             </div>
-
-
           </div>
-          <div className='role-list'>
+
+          <div className="role-list">
             <div className="table-wrapper">
-              <table className='role-table'>
+              <table className="role-table">
                 <thead>
                   <tr>
                     <th>Id</th>
@@ -140,20 +201,32 @@ function Attribute() {
                 </thead>
                 <tbody>
                   {attributes
-                    .filter(attr => attr.attributeName.toLowerCase().includes(searchText.toLowerCase()))
-                    .map(attr => (
+                    .filter((attr) =>
+                      attr.attributeName
+                        .toLowerCase()
+                        .includes(searchText.toLowerCase())
+                    )
+                    .map((attr) => (
                       <tr key={attr.id}>
                         <td>{attr.id}</td>
                         <td>{attr.attributeName}</td>
-                        <td>{attr.values.map(v => v.value).join(', ')}</td>
+                        <td>{(attr.values || []).map((v) => v.value).join(', ')}</td>
                         <td>
                           <span className={`status ${attr.status.toLowerCase()}`}>
                             {attr.status}
                           </span>
                         </td>
-                        <td className='action-buttons'>
-                          <FaEdit className='icon edit' title='Edit' onClick={() => handleEditClick(attr)} />
-                          <FaTrash className='icon delete' title='Delete' onClick={() => handleDeleteTag(attr.id)} />
+                        <td className="action-buttons">
+                          <FaEdit
+                            className="icon edit"
+                            title="Edit"
+                            onClick={() => handleEditClick(attr)}
+                          />
+                          <FaTrash
+                            className="icon delete"
+                            title="Delete"
+                            onClick={() => handleDeleteTag(attr.id)}
+                          />
                         </td>
                       </tr>
                     ))}
@@ -161,11 +234,12 @@ function Attribute() {
               </table>
             </div>
           </div>
+
           {/* Modal */}
           {showModal && (
             <div className="modal-overlay">
               <div className="modal-content">
-                <h3>Add New Attribute</h3>
+                <h3>{editingId ? 'Edit Attribute' : 'Add New Attribute'}</h3>
                 <label>Attribute Name</label>
                 <input
                   type="text"
@@ -178,8 +252,8 @@ function Attribute() {
                 <select
                   value={categoryId}
                   onChange={(e) => {
-                    setCategoryId(Number(e.target.value));
-                    setSubCategoryId(''); // Clear subcategory when category changes
+                    setCategoryId(e.target.value);
+                    setSubCategoryId('');
                   }}
                 >
                   <option value="">Select Category</option>
@@ -193,11 +267,13 @@ function Attribute() {
                 <label>Sub Category</label>
                 <select
                   value={subCategoryId}
-                  onChange={(e) => setSubCategoryId(Number(e.target.value))}
+                  onChange={(e) => setSubCategoryId(e.target.value)}
                 >
                   <option value="">Select Sub Category</option>
                   {subCategories
-                    .filter((sub) => Number(sub.categoryId) === Number(categoryId))
+                    .filter(
+                      (sub) => Number(sub.categoryId) === Number(categoryId)
+                    )
                     .map((sub) => (
                       <option key={sub.id} value={sub.id}>
                         {sub.subCategoryName}
@@ -205,9 +281,11 @@ function Attribute() {
                     ))}
                 </select>
 
-                {/* Value / Meta inputs */}
+                {/* Values */}
                 {values.length === 0 ? (
-                  <button className='btn-add-value' onClick={handleAddValue}>+ Add Value</button>
+                  <button className="btn-add-value" onClick={handleAddValue}>
+                    + Add Value
+                  </button>
                 ) : (
                   <>
                     {values.map((item, index) => (
@@ -216,26 +294,42 @@ function Attribute() {
                           type="text"
                           placeholder="Value"
                           value={item.value}
-                          onChange={(e) => handleValueChange(index, 'value', e.target.value)}
+                          onChange={(e) =>
+                            handleValueChange(index, 'value', e.target.value)
+                          }
                         />
                         <input
                           type="text"
                           placeholder="Meta"
                           value={item.meta}
-                          onChange={(e) => handleValueChange(index, 'meta', e.target.value)}
+                          onChange={(e) =>
+                            handleValueChange(index, 'meta', e.target.value)
+                          }
                         />
-                        <button className="btn-remove" onClick={() => handleRemoveValue(index)}>
+                        <button
+                          className="btn-remove"
+                          onClick={() => handleRemoveValue(index)}
+                        >
                           Remove
                         </button>
                       </div>
                     ))}
-                    <button className='btn-add-value' onClick={handleAddValue}>Add More Values</button>
+                    <button className="btn-add-value" onClick={handleAddValue}>
+                      Add More Values
+                    </button>
                   </>
                 )}
 
                 <div className="modal-actions">
                   <button onClick={handleSaveAttribute}>Save</button>
-                  <button onClick={() => setShowModal(false)}>Cancel</button>
+                  <button
+                    onClick={() => {
+                      setShowModal(false);
+                      resetForm();
+                    }}
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
             </div>

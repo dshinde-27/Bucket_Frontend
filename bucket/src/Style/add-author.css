@@ -1,21 +1,18 @@
-/* Container Rows */
 .modal-row {
     display: flex;
-    border-top: 1px dashed #b49286; /* softer brown */
+    border-top: 1px dashed #b49286;
     padding: 20px 0;
     gap: 20px;
-    color: #744253; /* deep plum for text */
+    color: #744253;
     margin-top: -18px;
 }
 
-/* Left Column */
 .modal-left {
     width: 40%;
     font-size: 12px;
-    color: #744253; /* deep plum for consistency */
+    color: #744253;
 }
 
-/* Right Column */
 .modal-right {
     width: 60%;
     display: flex;
@@ -24,15 +21,14 @@
     justify-content: center;
     color: #744253;
     background-color: #ffffff;
-    border: 1px solid #c78283; /* muted rose border */
+    border: 1px solid #c78283;
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 9px;
     margin-top: -12px;
-    box-shadow: 0 2px 5px rgba(116, 66, 83, 0.1); /* subtle plum shadow */
+    box-shadow: 0 2px 5px rgba(116, 66, 83, 0.1); 
 }
 
-/* Upload Dropzone */
 .upload-dropzone {
     border: 2px dashed #c78283;
     border-radius: 10px;
@@ -54,12 +50,10 @@
     border-color: #a65d6c;
 }
 
-/* Hidden Input */
 .hidden-input {
     display: none;
 }
 
-/* Image Preview */
 .image-preview {
     margin-top: 10px;
     display: flex;
@@ -73,14 +67,12 @@
     box-shadow: 0 2px 5px rgba(116, 66, 83, 0.1);
 }
 
-/* Form Groups */
 .form-group {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
-/* Inputs and Textareas */
 .form-group input[type="text"],
 .form-group input[type="date"],
 .form-group textarea ,
@@ -102,14 +94,12 @@
     box-shadow: 0 0 0 2px rgba(167, 93, 108, 0.2);
 }
 
-/* Labels */
 .form-group label {
     font-weight: 500;
     font-size: 13px;
     color: #744253;
 }
 
-/* Form Action Button */
 .form-actions {
     margin-top: 20px;
     display: flex;
@@ -132,14 +122,12 @@
     background-color: #8f4e5e;
 }
 
-/* Banner Note */
 .banner-note {
     font-style: italic;
     color: #9d6e76;
     margin-top: 4px;
 }
 
-/* Page Layout Background */
 .role-page {
     min-height: 100vh;
     background-repeat: no-repeat;
@@ -147,7 +135,6 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
     .modal-row {
         flex-direction: column;

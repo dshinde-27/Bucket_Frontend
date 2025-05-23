@@ -14,7 +14,6 @@
 .role-container {
   flex: 1 1;
   padding: 15px 15px;
-  /* background-color: #f9f9f9; */
   margin-top: 0;
   overflow-y: auto;
   height: 90vh;
@@ -24,7 +23,7 @@
 }
 
 .role-container::-webkit-scrollbar-track {
-  background: #f9f9f9; /* Same as background */
+  background: #f9f9f9;
 }
 
 .role-container::-webkit-scrollbar-thumb {
@@ -109,7 +108,6 @@
 .role-table {
   width: 100%;
   border-collapse: collapse;
-  /* background-color: #fff; */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   overflow: hidden;
@@ -277,9 +275,6 @@
     font-weight: bold;
     text-decoration: underline;
 }
-
-
-
 
 .modal-overlay-permission {
     position: fixed;

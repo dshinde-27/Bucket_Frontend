@@ -9,12 +9,14 @@ import Select from 'react-select';
 import * as FaIcons from 'react-icons/fa';
 import * as MdIcons from 'react-icons/md';
 import * as Io5Icons from 'react-icons/io5';
+import * as GiIcons from 'react-icons/gi';
 
 function Tag() {
     const [tags, setTags] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editTagId, setEditTagId] = useState(null);
+    const [deleteTagId, setDeleteTagId] = useState(null);
     const [showSearch, setShowSearch] = useState(false);
     const [categories, setCategories] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
@@ -30,10 +32,11 @@ function Tag() {
         subCategoryId: ''
     });
 
-    const AddTagBaseUrl = 'https://localhost:7237/api/Tag/AddTag';
-    const GetTagBaseUrl = 'https://localhost:7237/api/Tag/GetTag';
-    const EditTagBaseUrl = 'https://localhost:7237/api/Tag/EditTag';
-    const CategoryUrl = 'https://localhost:7237/api/Category';
+    const AddTagBaseUrl = 'https://localhost:7086/api/Tag/AddTag';
+    const GetTagBaseUrl = 'https://localhost:7086/api/Tag/GetTag';
+    const EditTagBaseUrl = 'https://localhost:7086/api/Tag/EditTag';
+    const DeleteTagBaseUrl = 'https://localhost:7086/api/Tag/DeleteTag';
+    const CategoryUrl = 'https://localhost:7086/api/Category';
 
     useEffect(() => {
         fetchTags();
@@ -108,14 +111,17 @@ function Tag() {
         }
     };
 
-    const handleDeleteTag = async (id) => {
+    const handleDeleteTag = async (tag) => {
+        if (!window.confirm(`Are you sure you want to delete the tag "${tag.tagName}"?`)) return;
+
         try {
-            await axios.delete(`${GetTagBaseUrl}/${id}`);
+            await axios.delete(`${DeleteTagBaseUrl}/${tag.id}`);
             fetchTags();
         } catch (error) {
             console.error('Error deleting tag:', error);
         }
     };
+
 
     const resetModal = () => {
         setNewTag({
@@ -135,7 +141,8 @@ function Tag() {
     const iconOptions = [
         ...Object.keys(FaIcons).map(name => ({ value: name, label: name, icon: FaIcons[name] })),
         ...Object.keys(MdIcons).map(name => ({ value: name, label: name, icon: MdIcons[name] })),
-        ...Object.keys(Io5Icons).map(name => ({ value: name, label: name, icon: Io5Icons[name] }))
+        ...Object.keys(Io5Icons).map(name => ({ value: name, label: name, icon: Io5Icons[name] })),
+        ...Object.keys(GiIcons).map(name => ({ value: name, label: name, icon: GiIcons[name] }))
     ];
 
     const selectedIconOption = iconOptions.find(opt => opt.value === newTag.icon) || null;
@@ -172,25 +179,20 @@ function Tag() {
             padding: '5px 2px',
             border: '1px solid #c78283',
             borderRadius: '6px',
-            color: '#744253',
-            width: '100%',
             fontSize: '12px',
-            outline: 'none',
             marginBottom: '12px',
-            transition: 'border 0.3s ease, box-shadow 0.3s ease',
             boxShadow: state.isFocused ? '0 0 0 2px #c78283' : 'none'
         }),
         option: (provided, state) => ({
             ...provided,
             padding: '8px 12px',
             backgroundColor: state.isFocused ? '#f4d2d3' : 'white',
-            color: '#744253',
-            cursor: 'pointer',
+            color: '#744253'
         })
     };
 
     return (
-        <div className='role-page' style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className='role-page' style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover' }}>
             <Navbar />
             <div className='main-layout'>
                 <Sidebar />
@@ -198,7 +200,7 @@ function Tag() {
                     <div className="role-header">
                         <h2>Tags</h2>
                         <div className="role-actions">
-                            <button className="search-icon" onClick={() => setShowSearch(prev => !prev)}>
+                            <button className="search-icon" onClick={() => setShowSearch(!showSearch)}>
                                 <FaSearch />
                             </button>
                             {showSearch && (
@@ -222,7 +224,7 @@ function Tag() {
                                 <thead>
                                     <tr>
                                         <th>Tag Name</th>
-                                        <th>SubTag Name</th>
+                                        <th>Slug</th>
                                         <th>Status</th>
                                         <th>Description</th>
                                         <th>Action</th>
@@ -234,7 +236,7 @@ function Tag() {
                                         .map(tag => (
                                             <tr key={tag.id}>
                                                 <td>{tag.tagName}</td>
-                                                <td>{tag.subTagName}</td>
+                                                <td>{tag.slug}</td>
                                                 <td>
                                                     <span className={`status ${tag.status.toLowerCase()}`}>
                                                         {tag.status}
@@ -243,7 +245,7 @@ function Tag() {
                                                 <td>{tag.description}</td>
                                                 <td className='action-buttons'>
                                                     <FaEdit className='icon edit' title='Edit' onClick={() => handleEditClick(tag)} />
-                                                    <FaTrash className='icon delete' title='Delete' onClick={() => handleDeleteTag(tag.id)} />
+                                                    <FaTrash className='icon delete' title='Delete' onClick={() => handleDeleteTag(tag)} />
                                                 </td>
                                             </tr>
                                         ))}
@@ -293,18 +295,12 @@ function Tag() {
                                 <label>Category</label>
                                 <select
                                     value={newTag.categoryId}
-                                    onChange={(e) =>
-                                        setNewTag({
-                                            ...newTag,
-                                            categoryId: e.target.value,
-                                            subCategoryId: '' // Reset subcategory when category changes
-                                        })
-                                    }
+                                    onChange={(e) => setNewTag({ ...newTag, categoryId: Number(e.target.value), subCategoryId: '' })}
                                 >
                                     <option value="">Select Category</option>
-                                    {categories.map(category => (
-                                        <option key={category.id} value={category.id}>
-                                            {category.categoryName}
+                                    {categories.map((cat) => (
+                                        <option key={cat.id} value={cat.id}>
+                                            {cat.categoryName}
                                         </option>
                                     ))}
                                 </select>
@@ -312,14 +308,12 @@ function Tag() {
                                 <label>Sub Category</label>
                                 <select
                                     value={newTag.subCategoryId}
-                                    onChange={(e) =>
-                                        setNewTag({ ...newTag, subCategoryId: e.target.value })
-                                    }
+                                    onChange={(e) => setNewTag({ ...newTag, subCategoryId: Number(e.target.value) })}
                                 >
-                                    <option value="">Select Subcategory</option>
+                                    <option value="">Select Sub Category</option>
                                     {subCategories
-                                        .filter(sub => sub.categoryId === parseInt(newTag.categoryId))
-                                        .map(sub => (
+                                        .filter((sub) => Number(sub.categoryId) === Number(newTag.categoryId))
+                                        .map((sub) => (
                                             <option key={sub.id} value={sub.id}>
                                                 {sub.subCategoryName}
                                             </option>
